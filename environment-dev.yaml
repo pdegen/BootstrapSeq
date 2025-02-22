@@ -1,0 +1,26 @@
+channels:
+- conda-forge
+- bioconda
+- nodefaults
+dependencies:
+- python=3.12.5=h2ad013b_0_cpython
+- ipykernel=6.29.5=pyh3099207_0
+- ipython=8.27.0=pyh707e725_0
+- matplotlib-base=3.9.2=py312hd3ec401_1
+- seaborn=0.13.2=hd8ed1ab_2
+- pandas=2.2.2=py312h1d6d2e6_1
+- pyyaml=6.0.2=py312h178313f_2
+- isort>=5.12.0
+- pre-commit>=3.5.0
+- ruff>=0.1.5
+- pyright>=1.1.335
+- pytest>=7.4.3
+- codecov>=2.1.13
+- pytest-cov>=4.1.0
+- pytest-benchmark>=4.0.0
+- mkdocs>=1.5.3
+- mkdocstrings>=0.23.0
+- mkdocstrings-python>=1.7.3
+- mkdocs-material>=9.4.8
+- Pygments>=2.16.1
+name: bootstrapseq_dev
