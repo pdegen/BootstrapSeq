@@ -1,0 +1,11 @@
+Sample,TumorPurity,days_to_birth,Condition
+Basal18,0.54,-17981.0,Basal
+Basal73,0.57,-21575.0,Basal
+Basal98,0.69,-22115.0,Basal
+Basal103,0.17,-24319.0,Basal
+Basal109,0.48,-23230.0,Basal
+LumA18,0.61,-22524.0,LumA
+LumA73,0.64,-15055.0,LumA
+LumA98,0.94,-32872.0,LumA
+LumA103,0.81,-9840.0,LumA
+LumA109,0.67,-22279.0,LumA

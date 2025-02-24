@@ -12,7 +12,7 @@ setup(
     extras_require={
         'bio': ['edgeR', 'DESeq2']
     },
-    author='Your Name',
+    author='Peter Degen',
     author_email='your.email@example.com',
     description='Bootstrap resample your small-powered RNA-Seq data set to estimate the expected reliability of downstream differential expression and enrichment results.',
     url='https://github.com/pdegen/BootstrapSeq',

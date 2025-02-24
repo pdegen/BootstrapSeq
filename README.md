@@ -1,6 +1,6 @@
 # BootstrapSeq
 
-Bootstrap resample your small-powered RNA-Seq data set to estimate the expected reliability of downstream differential expression and enrichment results.
+Bootstrap resample your low-powered RNA-Seq data set to estimate the expected reliability of downstream differential expression and enrichment results.
 
 ## Instructions
 
@@ -21,6 +21,10 @@ In a data set with $n$ biological replicates, the number of possible combination
 ![Combinations vs replicates](./assets/trials.png)
 
 ## To do
+
+- Run bootstrap trials in parallel
+
+- Let user call own R or Python script to perform DEA
 
 - Recommend number of trials based on variability of Spearman metric
 
