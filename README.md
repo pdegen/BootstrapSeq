@@ -8,7 +8,7 @@ This pre-release version is provided as a Jupyter notebook with further instruct
 
 Briefly, users provide a raw count matrix and a design matrix. Users must additionally have either edgeR or DESeq2 installed. The notebook will run bootstrapped differential expression analyses and compute the Spearman rank correlations for logFC estimates obtained from the bootstrapped and original data sets.
 
-In Degen and Medo (2025), we show that data sets with high (>0.85) Spearman correlation have overall higher precision, recall, and replicability. The figure below shows our results for 18 different data sets.
+In Degen and Medo (2025), we show that data sets with a high (>0.9) Spearman correlation have overall higher precision, recall, and replicability. Conversely, data sets with a low (<0.8) correlation are prone to false positives and low replicability. The figure below shows our results for 18 different data sets.
 
 ![Fig. 5 from Degen and Medo 2025](./assets/Fig5.png)
 
