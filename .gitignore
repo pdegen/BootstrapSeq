@@ -173,6 +173,7 @@ cython_debug/
 
 ### CUSTOM
 
-data/tmp/*
+data/tmp/
 data/log*
 data/*trials*.csv
+.vscode/

@@ -65,7 +65,7 @@ def compare_plot(metric_prefix=metric_prefix,
                    y_prefixes=y_prefixes, 
                    N1=5, 
                    N2=10,
-                   observed_val=None):
+                   observed_spearman=None):
 
     all_N = {N1: (x1,y1_suffix),
              N2: (x2,y2_suffix)
@@ -75,7 +75,6 @@ def compare_plot(metric_prefix=metric_prefix,
     
     scale=1.24
     figsize = (scale*7.2,scale*(-1+4*len(y_prefixes)))
-    print("Figsize",figsize)
     fig, axes = plt.subplots(len(y_prefixes), 2, figsize=figsize,sharex=False,sharey=False)
     
     for ax,  y_prefix in zip(axes, y_prefixes):
@@ -128,13 +127,13 @@ def compare_plot(metric_prefix=metric_prefix,
                 a.text(loc[0], loc[1], f"r = {r_val:.2f}\nr² = {r2_val:.2f}\np = {p_val:.2e}", 
                        transform=a.transAxes, fontsize=13, va=va,ha=ha, bbox=boxprops)
                 
-            if observed_val and fit_prec == "linear":
+            if observed_spearman and fit_prec == "linear":
                 def linear(x,a,b):
                     return a*x+b
                 params, pcov = curve_fit(linear, x, y)
-                intersect = linear(observed_val,params[0],params[1])
-                a.plot((observed_val, observed_val), (-1,intersect), ls="--",color="red",label="Observed")
-                a.plot((-1, observed_val), (intersect,intersect), ls="--",color="red")
+                intersect = linear(observed_spearman,params[0],params[1])
+                a.plot((observed_spearman, observed_spearman), (-1,intersect), ls="--",color="red",label="Observed")
+                a.plot((-1, observed_spearman), (intersect,intersect), ls="--",color="red")
 
             a.set(ylabel=f"Median {pretty_met[y_prefix]}")
         
@@ -155,7 +154,7 @@ def compare_plot(metric_prefix=metric_prefix,
             pass
             a.xaxis.set_ticks(np.arange(0.75, 1, 0.05))
         a.annotate(chr(ord('A')+i), xy=(-0.08, 1.08), xycoords="axes fraction", weight="bold", va='center',ha='center', fontsize=20)
-        a.set_title(f"N={N1}" if i%2==0 else f"N={N2}", size=16)
+        a.set_title(f"n={N1}" if i%2==0 else f"n={N2}", size=16)
 
     return fig
     
