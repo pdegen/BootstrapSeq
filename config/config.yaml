@@ -1,0 +1,4 @@
+trials: 2
+savepath: "results"
+clean_up: True
+name: "test"

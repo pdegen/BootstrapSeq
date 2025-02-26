@@ -1,0 +1,78 @@
+import os
+import glob
+import logging
+from pathlib import Path
+
+configfile: "config/config.yaml"
+
+trials = config["trials"]
+savepath = config["savepath"]
+name = config["name"]
+clean_up = config["clean_up"]
+
+final_output = f"{savepath}/{name}_trials_merged_{trials}.csv"
+
+existing_trials = 0
+existing_merged_file = ""
+
+def prepare():
+    existing_merged_file = Path(f"{savepath}/{name}_trials_merged_*.csv")
+    matched_files = glob.glob(str(existing_merged_file))
+    if matched_files:
+        results_file = matched_files[0]
+        existing_trials = int(results_file.split("_trials_merged_")[1].split(".")[0])
+        trials_to_run = trials - existing_trials
+
+        if trials_to_run < 1:
+            print(f"{existing_trials} trials already exist; {trials} requested, hence returning early...")
+            sys.exit(0)
+
+        print(f"Found: {existing_trials} existring trials, appending {trials_to_run} new ones...")
+
+onstart:
+    prepare()
+
+rule all:
+    input:
+        final_output
+
+rule run_trial:
+    output:
+        f"{savepath}/{name}_trial_{{i}}.csv"
+    params:
+        script="workflow/scripts/main.py"
+    conda:
+        "envs/environment.yaml"
+    shell:
+        "python {params.script} {savepath} {name} {wildcards.i}"
+
+rule merge_trials:
+    input:
+        expand(f"{savepath}/{name}_trial_{{i}}.csv", i=range(existing_trials+1, trials + 1))
+    output:
+        final_output
+    params:
+        script="workflow/scripts/merge_trials.py"
+    conda:
+        "envs/environment.yaml"
+    shell:
+        """
+        python {params.script} {savepath} {name} {trials} {clean_up}
+        """
+        # head -n 1 {input[0]} > {output}  # Write header from the first trial
+        # tail -n +2 -q {input} >> {output}  # Append all trials, skipping headers
+
+
+# rule merge_trials:
+#     input:
+#         expand(f"{savepath}/trial_{{i}}.csv", i=range(trials))
+#     output:
+#         f"{savepath}/final_output_{trials}.csv"
+#     params:
+#         script="workflow/scripts/merge_trials.py"
+#     conda:
+#         "envs/environment.yaml"
+#     shell:
+#         "python {params.script} {savepath} {trials} {clean_up}"
+#         #"cat {input} > {output}"  # Adjust for pandas merging if needed
+#         #{{"rm -f " + " ".join(input) if clean_up else ""}}
