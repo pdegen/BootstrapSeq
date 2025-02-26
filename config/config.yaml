@@ -1,8 +1,24 @@
-trials: 4
+# Can be increased later without rerunning already computed results
+trials: 7
+
+# Path to store results files
 savepath: "results"
+
+# Path to raw count matrix for edgeR
 count_matrix_path: "resources/BSLA.N5.csv"
+
+# Path to matrix with covariates. Index must match count matrix columns.
+# Must have at least one column "Condition"
 design: "resources/BSLA.N5.meta.csv"
+
+# String to tag results filenames with
 name: "test"
+
+# Delete individual trials afte merging
 clean_up: True
+
+# Unused for now (creates dummy fig)
 make_figs: True
+
+# Unused for now
 fig_ext: "pdf"
