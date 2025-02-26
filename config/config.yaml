@@ -1,0 +1,8 @@
+trials: 4
+savepath: "results"
+count_matrix_path: "resources/BSLA.N5.csv"
+design: "resources/BSLA.N5.meta.csv"
+name: "test"
+clean_up: True
+make_figs: True
+fig_ext: "pdf"

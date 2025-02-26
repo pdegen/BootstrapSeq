@@ -170,10 +170,13 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
+# Ignore Snakemake directory
+.snakemake/
 
 ### CUSTOM
 
-data/tmp/
-data/log*
-data/*trials*.csv
+resources/tmp/
+resources/log*
+resources/*trials*.csv
 .vscode/
+results/

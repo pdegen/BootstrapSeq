@@ -13,3 +13,4 @@ dependencies:
   - pyyaml=6.0.2=py312h178313f_2
   - rpy2=3.5.11=py312r43hc7c0aa3_3
   - scipy=1.14.1=py312h7d485d2_0
+  - snakemake=8.28.0=hdfd78af_0
