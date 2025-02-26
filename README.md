@@ -15,6 +15,7 @@ In Degen and Medo (2025), we show that data sets with a high (>0.9) Spearman cor
 1. Install Snakemake
    - You can also use conda and the provided [workflow/envs/environment.yaml](workflow/envs/environment.yaml)
    - `conda env create -f workflow/envs/environment.yml`
+   - `conda activate bootstrapseq`
 
 2. Edit [config/config.yaml](config/config.yaml) as needed or create a new config and define the filepath in [workflow/Snakefile](workflow/Snakefile)
 

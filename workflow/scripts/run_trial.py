@@ -39,9 +39,9 @@ def run_trial(savepath, name, trial_number, count_matrix_path, design, seed="tri
     if len(df.columns) % 2 != 0:
         raise Exception("Must have balanced number of replicates per condition for now")
     
+    created_bootstrapped_design = False
     if trial_number == 0: # Original, unbootstrapped df
         df_trial = df
-        created_bootstrapped_design = False
     else:
         df_trial = bootstrap_resample(df, design)
     

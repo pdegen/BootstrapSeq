@@ -1,5 +1,5 @@
 # Can be increased later without rerunning already computed results
-trials: 7
+trials: 4
 
 # Path to store results files
 savepath: "results"
@@ -7,8 +7,14 @@ savepath: "results"
 # Path to raw count matrix for edgeR
 count_matrix_path: "resources/BSLA.N5.csv"
 
-# Path to matrix with covariates. Index must match count matrix columns.
-# Must have at least one column "Condition"
+# Three options: 
+# 1. design = Path to csv file with covariates. 
+#    Index must match count matrix columns. Must have at least one column "Condition".
+#    Remaining columns are assumed covariates to control for.
+# 2. design = "unpaired" will test the first half of samples (columns) in the count matrix against the second half.
+#    Must have equal number of samples in both conditions.
+# 3. design = "paired" assumes matched samples. Assuming we have two conditions: Control and Perturbed,
+#    the count matrix columns must be ordered like C_1, ..., C_N, P_1, ..., P_N
 design: "resources/BSLA.N5.meta.csv"
 
 # String to tag results filenames with
