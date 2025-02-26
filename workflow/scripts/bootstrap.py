@@ -10,25 +10,27 @@ from scipy.stats import spearmanr
 
 from DEA import run_dea
 
-def compute_spearmans(tab_reference, bootstrap_results):
+def compute_spearmans(tab_reference, merged_trials):
+
     spearmans = []
-    trials = set(bootstrap_results["Trial"])
-    genes = len(bootstrap_results)//len(trials)
+    trials = set(merged_trials["Trial"])
+    genes = len(merged_trials)//len(trials)
 
     # DESeq2 logFC can return nan
     tab_reference = tab_reference["logFC"].dropna()
 
-    if len(bootstrap_results) % genes != 0:
+    if len(merged_trials) % genes != 0:
         logging.warning("Unequal lengths, spearman not computed")
         return 
     
     for trial in sorted(trials):
-        boot = bootstrap_results[bootstrap_results["Trial"]==trial]["logFC"].dropna()
+        boot = merged_trials[merged_trials["Trial"]==trial]["logFC"].dropna()
         common = tab_reference.index.intersection(boot.index)
         tab_reference_common = tab_reference.loc[common].rank()
         boot = boot.loc[common].rank()
         spearman = spearmanr(tab_reference_common, boot).statistic
-        spearmans.append(spearman)
+        if not np.isnan(spearman):
+            spearmans.append(spearman)
     return np.array(spearmans)
 
 def open_bootstrap_results(save_path, 

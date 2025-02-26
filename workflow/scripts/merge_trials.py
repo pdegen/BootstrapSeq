@@ -15,15 +15,16 @@ def main(savepath, name, trials, clean_up):
         existing_trials = int(old_merged_file.split("_trials_merged_")[1].split(".")[0])
         logger.info(f"Found: {existing_trials} existring trials, appending new ones...")
     else:
-        old_merged_file = None
         logger.info("No merged file found, initializing...")
+        old_merged_file = None
         os.system(f"touch {final_output}")
 
     trial_files = Path(f"{savepath}/{name}_trial_*.csv")
     matched_files = sorted(glob.glob(str(trial_files)))
 
     if not matched_files:
-        raise Exception("No trials fond...")
+        logging.info("No trials found...")
+        return
     
     for tf in matched_files:
         trial = int(tf.split("_trial_")[-1].split(".csv")[0])

@@ -22,7 +22,9 @@ def run_dea(df, outfile, method, overwrite=False, design="paired", lfc=0, verbos
     kwargs: additional keyword arguments passed to R method
     """
 
-    ro.r['source']("R_functions.r")  # Loading the R script
+    script_dir = os.path.dirname(os.path.abspath(__file__))  # Get current script directory
+    r_script_path = os.path.join(script_dir, "R_functions.r")  # Construct full path
+    ro.r['source'](r_script_path)  # Loading the R script
 
     # Converting pd to R dataframe
     df_r = df if isinstance(df, ro.vectors.DataFrame) else pd_to_R(df)
@@ -47,7 +49,9 @@ def run_dea(df, outfile, method, overwrite=False, design="paired", lfc=0, verbos
 def normalize_counts(df):
     """Use DESeq2 estimateSizeFactors to normalize a count matrix"""
 
-    ro.r['source']("R_functions.r")  # Loading the R script
+    script_dir = os.path.dirname(os.path.abspath(__file__))  # Get current script directory
+    r_script_path = os.path.join(script_dir, "R_functions.r")  # Construct full path
+    ro.r['source'](r_script_path)  # Loading the R script
 
     df_r = df if isinstance(df, ro.vectors.DataFrame) else pd_to_R(df)  # Converting to R dataframe
     DESeq2 = ro.globalenv['run_deseq2']

@@ -71,7 +71,7 @@ def compare_plot(metric_prefix=metric_prefix,
              N2: (x2,y2_suffix)
             }
     
-    dfm = pd.read_csv("../data/degen_medo_results.csv", index_col=0)
+    dfm = pd.read_csv("../resources/degen_medo_results.csv", index_col=0)
     
     scale=1.24
     figsize = (scale*7.2,scale*(-1+4*len(y_prefixes)))

@@ -10,15 +10,21 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+from bootstrap import compute_spearmans
+
 def process_results(savepath, name, trials, make_figs):
 
-    merged_trials = pd.read_csv(Path(f"{savepath}/{name}_trials_merged_{trials}.csv"))
+    merged_trials = pd.read_csv(Path(f"{savepath}/{name}_trials_merged_{trials}.csv"), index_col=0)
+    original_results = pd.read_csv(Path(f"{savepath}/{name}_original.csv"), index_col=0)
+    spearmans = compute_spearmans(original_results, merged_trials)
 
     outfile = Path(f"{savepath}/{name}_stats.json")
 
     dictionary = {
-        "spearman_median": merged_trials["logFC"].median(),
-        "spearman_std": merged_trials["logFC"].std(),
+        "spearman_median": np.median(spearmans),
+        "spearman_mean": np.mean(spearmans),
+        "spearman_std": np.std(spearmans),
+        "spearmans": spearmans.tolist()
     }
     
     json_object = json.dumps(dictionary, indent=4)
@@ -27,10 +33,11 @@ def process_results(savepath, name, trials, make_figs):
         f.write(json_object)
 
     if make_figs:
-        plot(merged_trials, savepath, name)
+        plot(spearmans, savepath, name)
 
-def plot(merged_trials, savepath, name):
-    sns.kdeplot(merged_trials["logFC"])
+def plot(spearmans, savepath, name):
+    # dummy plot for now
+    sns.kdeplot(spearmans)
     plt.savefig(f"{savepath}/{name}_spearman.pdf")
 
 if __name__ == "__main__":

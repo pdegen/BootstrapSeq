@@ -28,7 +28,7 @@ def predict_metrics(observed_spearman):
              10: (x2,y2_suffix)
             }
     
-    dfm = pd.read_csv("../data/degen_medo_results.csv", index_col=0)
+    dfm = pd.read_csv("../resources/degen_medo_results.csv", index_col=0)
     
     def linear(x,a,b):
         return a*x+b
