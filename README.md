@@ -2,7 +2,7 @@
 
 (Pre-release version)
 
-Bootstrap resample your low-powered RNA-Seq data set to estimate the expected reliability of downstream differential expression and enrichment results. Briefly, users provide a raw count matrix and a design matrix. Users must additionally have edgeR installed. The notebook will run bootstrapped differential expression analyses and compute the Spearman rank correlations for logFC estimates obtained from the bootstrapped and original data sets.
+Bootstrap resample your low-powered RNA-Seq data set to estimate the expected reliability of downstream differential expression and enrichment results. Briefly, users provide a raw count matrix and a design matrix. Users must additionally have edgeR installed. The provided Snakemake workflow (or Juypter notebook) will run bootstrapped differential expression analyses and compute the Spearman rank correlations for logFC estimates obtained from the bootstrapped and original data sets.
 
 In Degen and Medo (2025), we show that data sets with a high (>0.9) Spearman correlation have overall higher precision, recall, and replicability. Conversely, data sets with a low (<0.8) correlation are prone to false positives and low replicability. The figure below shows our results for 18 different data sets.
 
@@ -10,10 +10,12 @@ In Degen and Medo (2025), we show that data sets with a high (>0.9) Spearman cor
 
 ## Instructions
 
+For all options, it is assumed that you have R and edgeR already installed on your system. In a future version, it will be possible to do the bootstrapping with a user-provided Python or R script that performs a custom differential expression analysis.
+
 ### Option 1: Snakemake
 
-1. Install Snakemake
-   - You can also use conda and the provided [workflow/envs/environment.yaml](workflow/envs/environment.yaml)
+1. Install [Snakemake](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html)
+   - Bette yet, use the provided [workflow/envs/environment.yaml](workflow/envs/environment.yaml)
    - `conda env create -f workflow/envs/environment.yml`
    - `conda activate bootstrapseq`
 
@@ -25,7 +27,7 @@ The workflow will create a merged table with edgeR differential expression resul
 
 ### Option 2: Jupyter Notebook
 
-A Jupyter notebook with further instructions can be found in [workflow/notebooks/bootstrapseq.ipynb](.workflow/notebooks/bootstrapseq.ipynb). This option does not support parallelization for now.
+A Jupyter notebook with further instructions can be found in [notebooks/bootstrapseq.ipynb](notebooks/bootstrapseq.ipynb). This option does not support parallelization for now.
 
 ### Option 3: Docker Image
 
