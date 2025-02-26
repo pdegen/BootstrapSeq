@@ -9,11 +9,27 @@ trials = config["trials"]
 savepath = config["savepath"]
 name = config["name"]
 clean_up = config["clean_up"]
+make_figs = config["make_figs"]
+fig_ext = config["fig_ext"]
 
-final_output = f"{savepath}/{name}_trials_merged_{trials}.csv"
+merged_trials = f"{savepath}/{name}_trials_merged_{trials}.csv"
 
 existing_trials = 0
 existing_merged_file = ""
+
+### Final outputs
+
+if make_figs:
+    spearman_plot = (
+        f"{savepath}/{name}_spearman.pdf" #{fig_ext}"
+    )
+    all_figs = spearman_plot
+else:
+    all_figs = []
+
+stats_file = (
+    f"{savepath}/{name}_stats.json"
+)
 
 def prepare():
     existing_merged_file = Path(f"{savepath}/{name}_trials_merged_*.csv")
@@ -24,17 +40,19 @@ def prepare():
         trials_to_run = trials - existing_trials
 
         if trials_to_run < 1:
-            print(f"{existing_trials} trials already exist; {trials} requested, hence returning early...")
-            sys.exit(0)
+            print(f"{existing_trials} trials already exist; {trials} requested")
+        else:
+            print(f"Found: {existing_trials} existring trials, appending {trials_to_run} new ones...")
 
-        print(f"Found: {existing_trials} existring trials, appending {trials_to_run} new ones...")
+        return existing_trials
+    return 0
 
-onstart:
-    prepare()
+existing_trials = prepare()
 
 rule all:
     input:
-        final_output
+        all_figs,
+        stats_file
 
 rule run_trial:
     output:
@@ -50,29 +68,28 @@ rule merge_trials:
     input:
         expand(f"{savepath}/{name}_trial_{{i}}.csv", i=range(existing_trials+1, trials + 1))
     output:
-        final_output
+        merged_trials
     params:
         script="workflow/scripts/merge_trials.py"
     conda:
         "envs/environment.yaml"
     shell:
         """
+        echo {existing_trials} wtf
         python {params.script} {savepath} {name} {trials} {clean_up}
         """
-        # head -n 1 {input[0]} > {output}  # Write header from the first trial
-        # tail -n +2 -q {input} >> {output}  # Append all trials, skipping headers
 
-
-# rule merge_trials:
-#     input:
-#         expand(f"{savepath}/trial_{{i}}.csv", i=range(trials))
-#     output:
-#         f"{savepath}/final_output_{trials}.csv"
-#     params:
-#         script="workflow/scripts/merge_trials.py"
-#     conda:
-#         "envs/environment.yaml"
-#     shell:
-#         "python {params.script} {savepath} {trials} {clean_up}"
-#         #"cat {input} > {output}"  # Adjust for pandas merging if needed
-#         #{{"rm -f " + " ".join(input) if clean_up else ""}}
+rule compute_results:
+    input:
+        merged_trials
+    output:
+        all_figs,
+        stats_file
+    params:
+        script="workflow/scripts/compute_results.py"
+    conda:
+        "envs/environment.yaml"
+    shell:
+        """
+        python {params.script} {savepath} {name} {trials} {make_figs}
+        """

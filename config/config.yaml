@@ -1,4 +1,6 @@
-trials: 2
+trials: 10
 savepath: "results"
-clean_up: True
 name: "test"
+clean_up: True
+make_figs: True
+fig_ext: "pdf"
