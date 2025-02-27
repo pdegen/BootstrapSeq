@@ -181,3 +181,4 @@ resources/*trials*.csv
 .vscode/
 results/
 config/config_*
+resources/

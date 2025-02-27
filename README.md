@@ -15,7 +15,7 @@ For all options, it is assumed that you have R and edgeR already installed on yo
 ### Option 1: Snakemake
 
 1. Install [Snakemake](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html)
-   - Bette yet, use the provided [workflow/envs/environment.yaml](workflow/envs/environment.yaml)
+   - Better yet, use the provided [workflow/envs/environment.yaml](workflow/envs/environment.yaml)
    - `conda env create -f workflow/envs/environment.yml`
    - `conda activate bootstrapseq`
 
