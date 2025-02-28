@@ -179,6 +179,5 @@ resources/tmp/
 resources/log*
 resources/*trials*.csv
 .vscode/
-results/
 config/config_*
 resources/

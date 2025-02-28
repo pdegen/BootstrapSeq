@@ -96,7 +96,7 @@ docstring-code-format = true
 
 [tool.mypy]
 # Platform configuration
-python_version = "3.12.5"
+python_version = "3.12"
 # imports related
 ignore_missing_imports = true
 follow_imports = "silent"

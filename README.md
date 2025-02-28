@@ -10,7 +10,7 @@ In Degen and Medo (2025), we show that data sets with a high (>0.9) Spearman cor
 
 ## Instructions
 
-For all options, it is assumed that you have R and edgeR already installed on your system. In a future version, it will be possible to do the bootstrapping with a user-provided Python or R script that performs a custom differential expression analysis.
+For all options, it is assumed that you have R and edgeR already installed on your system. In a future version, it will be possible to do the bootstrapping with a user-provided Python or R script for custom log fold change estimation.
 
 ### Option 1: Snakemake
 
