@@ -1,14 +1,14 @@
 import os
 import sys
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from pathlib import Path
 
 from DEA import run_dea
 
-def bootstrap_resample(df, design):
 
+def bootstrap_resample(df, design):
     N = len(df.columns) // 2
 
     if isinstance(design, pd.DataFrame):
@@ -22,7 +22,7 @@ def bootstrap_resample(df, design):
 
         bootstrap_samples_c = np.random.choice(df.columns[:N_control], N_control)
         bootstrap_samples_p = np.random.choice(df.columns[N_perturbed:], N_perturbed)
-        bs = list(bootstrap_samples_c)+list(bootstrap_samples_p)
+        bs = list(bootstrap_samples_c) + list(bootstrap_samples_p)
         df_trial = df[bs]
 
     elif design == "paired":
@@ -35,43 +35,42 @@ def bootstrap_resample(df, design):
     elif design == "unpaired":
         bootstrap_samples_c = np.random.choice(df.columns[:N], N)
         bootstrap_samples_p = np.random.choice(df.columns[N:], N)
-        bs = list(bootstrap_samples_c)+list(bootstrap_samples_p)
+        bs = list(bootstrap_samples_c) + list(bootstrap_samples_p)
         df_trial = df[bs]
 
     return df_trial
 
-def run_trial(savepath, name, trial_number, count_matrix_path, design):
 
+def run_trial(savepath, name, trial_number, count_matrix_path, design):
     np.random.seed(trial_number)
 
     df = pd.read_csv(count_matrix_path, index_col=0)
 
     created_bootstrapped_design = False
-    if trial_number == 0: # Original, unbootstrapped df
+    if trial_number == 0:  # Original, unbootstrapped df
         df_trial = df
     else:
-
-        if design in ["paired","unpaired"]:
+        if design in ["paired", "unpaired"]:
             if len(df.columns) % 2 != 0:
                 raise Exception("Must have balanced number of replicates per condition for paired or unpaired designs")
             df_trial = bootstrap_resample(df, design)
-    
+
         elif os.path.isfile(design):
             meta = pd.read_csv(design, index_col=0)
             df_trial = bootstrap_resample(df, meta)
             meta_sub = meta.loc[df_trial.columns]
             meta_sub.copy()
             design = f"{savepath}/{name}_design_trial_{trial_number}.csv"
-            meta_sub.index = [col+str(i) for i, col in enumerate(meta_sub.index)]
+            meta_sub.index = [col + str(i) for i, col in enumerate(meta_sub.index)]
             meta_sub.to_csv(design)
             created_bootstrapped_design = True
 
         else:
             raise Exception("Invalid desing:", design)
 
-         # Ensure no duplicate col names
-        df_trial.columns = [col+str(i) for i, col in enumerate(df_trial.columns)]
-    
+        # Ensure no duplicate col names
+        df_trial.columns = [col + str(i) for i, col in enumerate(df_trial.columns)]
+
     if trial_number == 0:
         outfile = Path(f"{savepath}/{name}_original.csv")
     else:
@@ -86,24 +85,21 @@ def run_trial(savepath, name, trial_number, count_matrix_path, design):
     # Clean up
     if created_bootstrapped_design:
         os.system(f"rm {design}")
-        
-if __name__ == "__main__":
 
+
+if __name__ == "__main__":
     savepath = sys.argv[1]
     name = sys.argv[2]
     trial_number = int(sys.argv[3])
     count_matrix_path = sys.argv[4]
     design = sys.argv[5]
 
-    create_dummy_Data = False
+    CREATE_DUMMY_DATA = False
 
-    if create_dummy_Data:
-        df = pd.DataFrame(np.random.normal(0,1,(10,2)),
-                        index=range(10),
-                        columns=["logFC","FDR"])
+    if CREATE_DUMMY_DATA:
+        df = pd.DataFrame(np.random.normal(0, 1, (10, 2)), index=range(10), columns=["logFC", "FDR"])
         df["Trial"] = trial_number
         df.to_csv(f"{savepath}/{name}_trial_{trial_number}.csv")
 
     else:
         run_trial(savepath, name, trial_number, count_matrix_path, design)
-    

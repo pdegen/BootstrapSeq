@@ -1,10 +1,11 @@
-import sys
-import os
 import glob
 import logging
+import os
+import sys
 from pathlib import Path
 
 import pandas as pd
+
 
 def main(savepath, name, trials, clean_up):
     old_merged_file = Path(f"{savepath}/{name}_trials_merged_*.csv")
@@ -25,13 +26,13 @@ def main(savepath, name, trials, clean_up):
     if not matched_files:
         logging.info("No trials found...")
         return
-    
+
     for tf in matched_files:
         trial = int(tf.split("_trial_")[-1].split(".csv")[0])
         logger.info(trial)
         if trial == 1:
-            os.system(f"head -n 1 {tf} > {old_merged_file}") # Write header from the first trial
-        os.system(f"tail -n +2 -q {tf} >> {old_merged_file}") # Append all trials, skipping headers
+            os.system(f"head -n 1 {tf} > {old_merged_file}")  # Write header from the first trial
+        os.system(f"tail -n +2 -q {tf} >> {old_merged_file}")  # Append all trials, skipping headers
 
         if clean_up:
             os.system(f"rm {tf}")
@@ -40,7 +41,6 @@ def main(savepath, name, trials, clean_up):
 
 
 if __name__ == "__main__":
-
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger()
 
