@@ -68,7 +68,7 @@ def print_metrics(tab_truth, tab, FDR=0.05, return_metrics=False, return_classes
     squared = float((lTP + lFP) * (lTP + lFN) * (lTN + lFP) * (lTN + lFN))
     mcc = (lTP * lTN - lFP * lFN) / (np.sqrt(squared)) if squared else np.nan
     prec = lTP / (lTP + lFP) if lTP + lFP else np.nan
-    rec = lTP / (lTP + lFP)
+    rec = lTP / (lTP + lFN)
 
     print(f"MCC: {mcc:>10.2f}")
     print(f"Precision: {prec:.2f}")

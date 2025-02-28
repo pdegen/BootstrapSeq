@@ -62,6 +62,7 @@ boxprops = dict(boxstyle="round", facecolor="#e4eaf3", alpha=1, edgecolor="#2a3b
 
 palette = sns.color_palette("crest", n_colors=len(order_rep))
 palette_ordered = {data: color for data, color in zip(order_rep, palette[: len(order_rep)])}
+sns.set_palette("tab10")
 
 cohorts = range(50)
 reference = "Cohort"
