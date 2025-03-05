@@ -7,7 +7,7 @@ from pathlib import Path
 import pandas as pd
 
 
-def main(savepath, name, trials, clean_up):
+def main(savepath: str, name: str, trials: int, clean_up: bool) -> None:
     old_merged_file = Path(f"{savepath}/{name}_trials_merged_*.csv")
     final_output = Path(f"{savepath}/{name}_trials_merged_{trials}.csv")
     matched_files = glob.glob(str(old_merged_file))
@@ -46,7 +46,7 @@ if __name__ == "__main__":
 
     savepath = sys.argv[1]
     name = sys.argv[2]
-    trials = sys.argv[3]
-    clean_up = sys.argv[4]
+    trials = int(sys.argv[3])
+    clean_up = bool(sys.argv[4])
 
     main(savepath, name, trials, clean_up)

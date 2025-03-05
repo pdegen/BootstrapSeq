@@ -9,7 +9,7 @@ from scipy.optimize import curve_fit
 sns.set_style("whitegrid", {"axes.linewidth": 2, "axes.edgecolor": "black"})
 
 
-def make_volcano(tab, lfc=0, FDR=0.05, title="", ylim=np.inf):
+def make_volcano(tab: pd.DataFrame, lfc: float = 0, FDR: float = 0.05, title: str = "", ylim: float = np.inf):
     sig = tab[(tab["FDR"] < FDR) & (tab["logFC"].abs() > lfc)]
     sns.scatterplot(x=tab["logFC"], y=-np.log10(tab["FDR"]), edgecolor=None, color="grey")
     sns.scatterplot(x=sig["logFC"], y=-np.log10(sig["FDR"]), edgecolor=None)

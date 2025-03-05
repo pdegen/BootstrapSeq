@@ -14,6 +14,7 @@ dependencies:
 - scipy=1.14.1=py312h7d485d2_0
 - snakemake=8.28.0=hdfd78af_0
 - isort>=5.12.0
+- mypy>=1.6.1
 - pre-commit>=3.5.0
 - ruff>=0.1.5
 - pyright>=1.1.335

@@ -8,7 +8,7 @@ import pandas as pd
 from DEA import run_dea
 
 
-def bootstrap_resample(df, design):
+def bootstrap_resample(df: pd.DataFrame, design: str | pd.DataFrame) -> pd.DataFrame:
     N = len(df.columns) // 2
 
     if isinstance(design, pd.DataFrame):
@@ -41,7 +41,7 @@ def bootstrap_resample(df, design):
     return df_trial
 
 
-def run_trial(savepath, name, trial_number, count_matrix_path, design):
+def run_trial(savepath: str, name: str, trial_number: int, count_matrix_path: str, design: str) -> None:
     np.random.seed(trial_number)
 
     df = pd.read_csv(count_matrix_path, index_col=0)
@@ -61,7 +61,7 @@ def run_trial(savepath, name, trial_number, count_matrix_path, design):
             meta_sub = meta.loc[df_trial.columns]
             meta_sub.copy()
             design = f"{savepath}/{name}_design_trial_{trial_number}.csv"
-            meta_sub.index = [col + str(i) for i, col in enumerate(meta_sub.index)]
+            meta_sub.index = pd.Index([col + str(i) for i, col in enumerate(meta_sub.index)])
             meta_sub.to_csv(design)
             created_bootstrapped_design = True
 

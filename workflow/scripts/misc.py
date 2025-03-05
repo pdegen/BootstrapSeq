@@ -1,3 +1,5 @@
+from typing import Tuple
+
 import numpy as np
 import pandas as pd
 from scipy.optimize import curve_fit
@@ -20,7 +22,7 @@ pretty_met = {
 }
 
 
-def predict_metrics(observed_spearman):
+def predict_metrics(observed_spearman: float) -> dict:
     metrics = ["Prec", "Rec", "Rep"]
 
     x1 = "Spear_Cohort_N5_median"
@@ -51,7 +53,9 @@ def predict_metrics(observed_spearman):
     return res_dict
 
 
-def print_metrics(tab_truth, tab, FDR=0.05, return_metrics=False, return_classes=False):
+def print_metrics(
+    tab_truth, tab, FDR=0.05, return_metrics=False, return_classes=False
+) -> Tuple[float, float, float] | Tuple[pd.Series, pd.Series, pd.Series, pd.Series] | None:
     common = tab_truth.index.intersection(tab.index)
     true = tab_truth.loc[common]["FDR"] < FDR
     pred = tab.loc[common]["FDR"] < FDR

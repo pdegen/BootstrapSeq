@@ -11,7 +11,7 @@ DEV_PACKAGES = [
     # Linting/Tooling
     # "black>=23.11.0",
     "isort>=5.12.0",
-    # "mypy>=1.6.1",
+    "mypy>=1.6.1",
     "pre-commit>=3.5.0",
     "ruff>=0.1.5",
     "pyright>=1.1.335",

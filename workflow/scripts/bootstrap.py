@@ -3,6 +3,7 @@ import glob
 import logging
 import os
 import re
+from typing import Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -11,7 +12,21 @@ from scipy.stats import spearmanr
 from DEA import run_dea
 
 
-def compute_spearmans(tab_reference, merged_trials):
+def compute_spearmans(tab_reference: pd.DataFrame, merged_trials: pd.DataFrame) -> Optional[np.ndarray]:
+    """Compute logFC Spearman rank correlation for each trial relative to a reference.
+
+    Parameters
+    ----------
+    tab_reference : pandas.DataFrame
+        Output table from edegR
+    merged_trials : pandas.DataFrame
+        Output table from bootstrap_data()
+
+    Returns
+    -------
+    numpy.array
+        1D array of Spearman correlations for each trial.
+    """
     spearmans = []
     trials = set(merged_trials["Trial"])
     genes = len(merged_trials) // len(trials)
@@ -34,7 +49,9 @@ def compute_spearmans(tab_reference, merged_trials):
     return np.array(spearmans)
 
 
-def open_bootstrap_results(save_path, method, name, return_df=True):
+def open_bootstrap_results(
+    save_path: str, method: str, name: str, return_df: bool = True
+) -> Tuple[Optional[pd.DataFrame], str, int]:
     results_file = f"{save_path}/{name}.boot.trials*.{method}.csv"
     matched_files = glob.glob(results_file)
     if matched_files:
@@ -50,7 +67,49 @@ def open_bootstrap_results(save_path, method, name, return_df=True):
     return None, results_file, 0
 
 
-def bootstrap_data(df, save_path, lfc, design, method, name, trials, meta=None, logfile=None, maxiter=5):
+def bootstrap_data(
+    df: pd.DataFrame,
+    save_path: str,
+    lfc: float,
+    design: str,
+    method: str,
+    name: str,
+    trials: int,
+    meta: Optional[pd.DataFrame] = None,
+    logfile: Optional[str] = None,
+    maxiter: int = 1,
+):
+    """Repeatedly estimate logFC on bootstrapped resamples of df using edegR or DESeq2. Stores output in merged csv table.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        Input dataframe with raw read counts.
+    save_path : str
+        Path to save results in.
+    lfc : float
+        Formal log2 fold change threshold for differential expression testing.
+    design : str
+        Either "custom", "paired", or "unpaired". If "custom", must provide meta. Else, df must have even number of
+        columns, sorted by condition and sample number.
+    method : str
+        Either "edegR" or "deseq2".
+    name : str
+        String to tag filenames with.
+    trials : int
+        _description_
+    meta : pandas.DataFrame, optional
+        Dataframe with covariates. Index must match df columns. Must have a column called "Condition". By default None
+    logfile : str, optional
+        Path to logfile, by default None
+    maxiter : int, optional
+        How many times to re-attempt differential expression analysis with new resamples in case of failure, by default 1
+
+    Raises
+    ------
+    Exception
+        Provided df has unequal number of replicates per condition.
+    """
     results = None
 
     # TO DO: unbalanced number of samples per condition
@@ -77,10 +136,10 @@ def bootstrap_data(df, save_path, lfc, design, method, name, trials, meta=None, 
         outfile_dea = f"{save_path}/tmp/tab.tmp.trial{trial}.csv"
 
         np.random.seed(trial)  # important for multiprocessing
-        print(maxiter)
-        # max 5 attempts if DEA fails for small N (matrix not full rank error if too many covariates)
+
+        # maxiter attempts if DEA fails for small N (matrix not full rank error if too many covariates)
         for a in range(1, maxiter):
-            print(a)
+            np.random.seed(trial + (a - 1) * 1000)  # for first iteration, use trial number as seed
             # preserve matched samples
             if design == "paired":
                 ind = np.array(np.random.choice(range(0, N), N))
@@ -96,12 +155,12 @@ def bootstrap_data(df, save_path, lfc, design, method, name, trials, meta=None, 
 
             logging.info(f"Running trial: {trial}, samples: {df_bag.columns}, path: {save_path}")
 
-            if design == "custom":
+            if design == "custom" and meta is not None:
                 meta_sub = meta.loc[df_bag.columns]
                 meta_sub.copy()
                 # add suffix to filename avoid multiprocess conflict
                 design_sub = f"{save_path}/tmp/design.trial{trial}.csv"
-                meta_sub.index = [col + str(i) for i, col in enumerate(meta_sub.index)]
+                meta_sub.index = pd.Index([col + str(i) for i, col in enumerate(meta_sub.index)])
                 meta_sub.to_csv(design_sub)
             elif design in ["paired", "unpaired"]:
                 design_sub = design

@@ -9,7 +9,16 @@ from rpy2.rinterface_lib.callbacks import logger as rpy2_logger
 from R_wrappers import pd_to_R
 
 
-def run_dea(df, outfile, method, overwrite=False, design="paired", lfc=0, verbose=False, **kwargs):
+def run_dea(
+    df: pd.DataFrame,
+    outfile: str,
+    method: str,
+    overwrite: bool = False,
+    design: str = "paired",
+    lfc: float = 0,
+    verbose: bool = False,
+    **kwargs,
+) -> None:
     """Wrapper to call appropriate R method to run differential expression analysis
 
     Parameters
@@ -47,7 +56,7 @@ def run_dea(df, outfile, method, overwrite=False, design="paired", lfc=0, verbos
         raise Exception(f"Method {method} not implemented")
 
 
-def normalize_counts(df):
+def normalize_counts(df: pd.DataFrame) -> pd.DataFrame:
     """Use DESeq2 estimateSizeFactors to normalize a count matrix"""
 
     script_dir = os.path.dirname(os.path.abspath(__file__))  # Get current script directory
