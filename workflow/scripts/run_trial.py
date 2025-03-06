@@ -9,7 +9,7 @@ from DEA import run_dea
 
 
 def bootstrap_resample(df: pd.DataFrame, design: str | pd.DataFrame) -> pd.DataFrame:
-    N = len(df.columns) // 2
+    n = len(df.columns) // 2
 
     if isinstance(design, pd.DataFrame):
         if "Condition" not in design.columns:
@@ -17,24 +17,24 @@ def bootstrap_resample(df: pd.DataFrame, design: str | pd.DataFrame) -> pd.DataF
         dd = design.value_counts("Condition").loc[list(set(design["Condition"]))]
         if dd.shape != (2,):
             raise Exception("Must have two conditions")
-        N_control = dd.iloc[0]
-        N_perturbed = dd.iloc[1]
+        n_control = dd.iloc[0]
+        n_perturbed = dd.iloc[1]
 
-        bootstrap_samples_c = np.random.choice(df.columns[:N_control], N_control)
-        bootstrap_samples_p = np.random.choice(df.columns[N_perturbed:], N_perturbed)
+        bootstrap_samples_c = np.random.choice(df.columns[:n_control], n_control)
+        bootstrap_samples_p = np.random.choice(df.columns[n_perturbed:], n_perturbed)
         bs = list(bootstrap_samples_c) + list(bootstrap_samples_p)
         df_trial = df[bs]
 
     elif design == "paired":
         # preserve matched samples
-        ind = np.array(np.random.choice(range(0, N), N))
-        ind = np.concatenate([ind, ind + N])
+        ind = np.array(np.random.choice(range(0, n), n))
+        ind = np.concatenate([ind, ind + n])
         ind = np.sort(ind)
         df_trial = df.iloc[:, ind]
 
     elif design == "unpaired":
-        bootstrap_samples_c = np.random.choice(df.columns[:N], N)
-        bootstrap_samples_p = np.random.choice(df.columns[N:], N)
+        bootstrap_samples_c = np.random.choice(df.columns[:n], n)
+        bootstrap_samples_p = np.random.choice(df.columns[n:], n)
         bs = list(bootstrap_samples_c) + list(bootstrap_samples_p)
         df_trial = df[bs]
 

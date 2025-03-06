@@ -4,13 +4,11 @@ import os
 import sys
 from pathlib import Path
 
-import pandas as pd
-
 
 def main(savepath: str, name: str, trials: int, clean_up: bool) -> None:
-    old_merged_file = Path(f"{savepath}/{name}_trials_merged_*.csv")
+    old_merged_file_query = Path(f"{savepath}/{name}_trials_merged_*.csv")
     final_output = Path(f"{savepath}/{name}_trials_merged_{trials}.csv")
-    matched_files = glob.glob(str(old_merged_file))
+    matched_files = glob.glob(str(old_merged_file_query))
     if matched_files:
         old_merged_file = matched_files[0]
         existing_trials = int(old_merged_file.split("_trials_merged_")[1].split(".")[0])

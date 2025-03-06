@@ -3,7 +3,8 @@ import glob
 import logging
 import os
 import re
-from typing import Optional, Tuple
+from typing import Optional
+from typing import Tuple
 
 import numpy as np
 import pandas as pd
@@ -12,7 +13,7 @@ from scipy.stats import spearmanr
 from DEA import run_dea
 
 
-def compute_spearmans(tab_reference: pd.DataFrame, merged_trials: pd.DataFrame) -> Optional[np.ndarray]:
+def compute_spearmans(tab_reference: pd.DataFrame | pd.Series, merged_trials: pd.DataFrame) -> Optional[np.ndarray]:
     """Compute logFC Spearman rank correlation for each trial relative to a reference.
 
     Parameters
@@ -36,15 +37,15 @@ def compute_spearmans(tab_reference: pd.DataFrame, merged_trials: pd.DataFrame) 
 
     if len(merged_trials) % genes != 0:
         logging.warning("Unequal lengths, spearman not computed")
-        return
+        return None
 
     for trial in sorted(trials):
         boot = merged_trials[merged_trials["Trial"] == trial]["logFC"].dropna()
         common = tab_reference.index.intersection(boot.index)
         tab_reference_common = tab_reference.loc[common].rank()
         boot = boot.loc[common].rank()
-        spearman = spearmanr(tab_reference_common, boot).statistic
-        if not np.isnan(spearman):
+        spearman, _ = spearmanr(tab_reference_common, boot)
+        if isinstance(spearman, (int, float)) and not np.isnan(spearman):
             spearmans.append(spearman)
     return np.array(spearmans)
 
@@ -79,7 +80,8 @@ def bootstrap_data(
     logfile: Optional[str] = None,
     maxiter: int = 1,
 ):
-    """Repeatedly estimate logFC on bootstrapped resamples of df using edegR or DESeq2. Stores output in merged csv table.
+    """Repeatedly estimate logFC on bootstrapped resamples of df using edegR or DESeq2. Stores output in merged csv
+    table.
 
     Parameters
     ----------
@@ -103,7 +105,8 @@ def bootstrap_data(
     logfile : str, optional
         Path to logfile, by default None
     maxiter : int, optional
-        How many times to re-attempt differential expression analysis with new resamples in case of failure, by default 1
+        How many times to re-attempt differential expression analysis with new resamples in case of failure,
+        by default 1
 
     Raises
     ------
@@ -116,7 +119,7 @@ def bootstrap_data(
     if len(df.columns) % 2 != 0:
         raise Exception("Must have balanced number of replicates per condition for now")
 
-    N = len(df.columns) // 2
+    n = len(df.columns) // 2
     os.system(f"mkdir -p {save_path}/tmp")
 
     # If exists, read results file where trial results will be concatenated to
@@ -142,15 +145,15 @@ def bootstrap_data(
             np.random.seed(trial + (a - 1) * 1000)  # for first iteration, use trial number as seed
             # preserve matched samples
             if design == "paired":
-                ind = np.array(np.random.choice(range(0, N), N))
-                ind = np.concatenate([ind, ind + N])
+                ind = np.array(np.random.choice(range(0, n), n))
+                ind = np.concatenate([ind, ind + n])
                 ind = np.sort(ind)
                 df_bag = df.iloc[:, ind]
 
             else:
-                bootstrap_samples_N = np.random.choice(df.columns[:N], N)
-                bootstrap_samples_T = np.random.choice(df.columns[N:], N)
-                bs = list(bootstrap_samples_N) + list(bootstrap_samples_T)
+                bootstrap_samples_n = np.random.choice(df.columns[:n], n)
+                bootstrap_samples_t = np.random.choice(df.columns[n:], n)
+                bs = list(bootstrap_samples_n) + list(bootstrap_samples_t)
                 df_bag = df[bs]
 
             logging.info(f"Running trial: {trial}, samples: {df_bag.columns}, path: {save_path}")

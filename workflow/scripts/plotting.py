@@ -9,12 +9,12 @@ from scipy.optimize import curve_fit
 sns.set_style("whitegrid", {"axes.linewidth": 2, "axes.edgecolor": "black"})
 
 
-def make_volcano(tab: pd.DataFrame, lfc: float = 0, FDR: float = 0.05, title: str = "", ylim: float = np.inf):
-    sig = tab[(tab["FDR"] < FDR) & (tab["logFC"].abs() > lfc)]
+def make_volcano(tab: pd.DataFrame, lfc: float = 0, fdr: float = 0.05, title: str = "", ylim: float = np.inf):
+    sig = tab[(tab["FDR"] < fdr) & (tab["logFC"].abs() > lfc)]
     sns.scatterplot(x=tab["logFC"], y=-np.log10(tab["FDR"]), edgecolor=None, color="grey")
     sns.scatterplot(x=sig["logFC"], y=-np.log10(sig["FDR"]), edgecolor=None)
     plt.ylabel("-log10 FDR")
-    plt.axhline(-np.log10(FDR), ls="--", color="red")
+    plt.axhline(-np.log10(fdr), ls="--", color="red")
     if lfc > 0:
         plt.axvline(lfc, ls="--", color="red")
         plt.axvline(-lfc, ls="--", color="red")
@@ -58,10 +58,10 @@ order_rep = [
     "HSPL",
     "SNF2",
 ]
-boxprops = dict(boxstyle="round", facecolor="#e4eaf3", alpha=1, edgecolor="#2a3b76")
+boxprops = {"boxstyle": "round", "facecolor": "#e4eaf3", "alpha": 1, "edgecolor": "#2a3b76"}
 
 palette = sns.color_palette("crest", n_colors=len(order_rep))
-palette_ordered = {data: color for data, color in zip(order_rep, palette[: len(order_rep)])}
+palette_ordered = dict(zip(order_rep, palette[: len(order_rep)], strict=False))
 sns.set_palette("tab10")
 
 cohorts = range(50)
@@ -90,11 +90,11 @@ def compare_plot(
     y1_suffix=y1_suffix,
     y2_suffix=y2_suffix,
     y_prefixes=y_prefixes,
-    N1=5,
-    N2=10,
+    n1=5,
+    n2=10,
     observed_spearman=None,
 ):
-    all_N = {N1: (x1, y1_suffix), N2: (x2, y2_suffix)}
+    all_n = {n1: (x1, y1_suffix), n2: (x2, y2_suffix)}
 
     dfm = pd.read_csv("../resources/degen_medo_results.csv", index_col=0)
 
@@ -102,7 +102,7 @@ def compare_plot(
     figsize = (scale * 7.2, scale * (-1 + 4 * len(y_prefixes)))
     fig, axes = plt.subplots(len(y_prefixes), 2, figsize=figsize, sharex=False, sharey=False)
 
-    for ax, y_prefix in zip(axes, y_prefixes):
+    for ax, y_prefix in zip(axes, y_prefixes, strict=False):
         ax = ax.flatten()
 
         sns.scatterplot(
@@ -134,12 +134,12 @@ def compare_plot(
             sns.regplot(data=dfm, y=f"{y_prefix}_{y1_suffix}", x=x1, ax=ax[0], scatter_kws={"s": 0}, order=1)
             sns.regplot(data=dfm, y=f"{y_prefix}_{y2_suffix}", x=x2, scatter_kws={"s": 0}, ax=ax[1], order=1)
 
-        for N, a in zip(all_N, ax):
-            xx = all_N[N][0]
-            yy = f"{y_prefix}_{all_N[N][1]}"
+        for n, a in zip(all_n, ax, strict=False):
+            xx = all_n[n][0]
+            yy = f"{y_prefix}_{all_n[n][1]}"
             x = dfm[xx].dropna()
             y = dfm[yy].dropna()
-            common = x.index.intersection(y.index)
+            common = x.index.intersection(list(y.index))
             x, y = x.loc[common], y.loc[common]
 
             if fit_prec == "binormal":
@@ -159,7 +159,8 @@ def compare_plot(
 
             else:
                 r_val, p_val = stats.pearsonr(x, y)
-                r2_val = r_val**2
+                if isinstance(r_val, float):
+                    r2_val = r_val**2
 
                 if y_prefix == "Prec":
                     loc = (0.95, 0.05)
@@ -192,7 +193,7 @@ def compare_plot(
 
             a.set(ylabel=f"Median {pretty_met[y_prefix]}")
 
-    ### MISC.
+    # MISC.
 
     handles, labels = axes[0][0].get_legend_handles_labels()
     fig.legend(
@@ -224,6 +225,6 @@ def compare_plot(
             ha="center",
             fontsize=20,
         )
-        a.set_title(f"n={N1}" if i % 2 == 0 else f"n={N2}", size=16)
+        a.set_title(f"n={n1}" if i % 2 == 0 else f"n={n2}", size=16)
 
     return fig

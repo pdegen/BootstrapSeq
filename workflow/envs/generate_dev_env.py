@@ -1,4 +1,5 @@
-# Annoying workaround since conda doesn't support including other environment.yaml files, unlike --requirement requirements.txt
+# Annoying workaround since conda doesn't support including other environment.yaml files,
+# unlike --requirement requirements.txt
 
 import yaml
 
