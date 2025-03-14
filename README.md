@@ -10,11 +10,12 @@ In Degen and Medo (2025), we show that data sets with a high (>0.9) Spearman cor
 
 ## Instructions
 
-For all options, it is assumed that you have R and edgeR already installed on your system. In a future version, it will be possible to do the bootstrapping with a user-provided Python or R script for custom log fold change estimation.
+In a future version, it will be possible to do the bootstrapping with a user-provided Python or R script for custom log fold change estimation.
 
 ### Option 1: Snakemake
 
 1. Clone the repository
+    - `git clone https://github.com/pdegen/BootstrapSeq.git`
 2. Create a conda environment using [workflow/envs/environment.yaml](workflow/envs/environment.yaml)
    - `conda env create -f workflow/envs/environment.yaml`
    - `conda activate bootstrapseq`
@@ -27,7 +28,7 @@ The workflow will create a merged table with edgeR differential expression resul
 
 ### Option 2: Jupyter Notebook
 
-A Jupyter notebook with further instructions can be found in [notebooks/bootstrapseq.ipynb](notebooks/bootstrapseq.ipynb). This option does not support parallelization for now.
+A Jupyter notebook with further instructions can be found in [notebooks/bootstrapseq.ipynb](notebooks/bootstrapseq.ipynb). This option does not support parallelization for now. You can handle package installation yourself or use the conda environment from Option 1.
 
 ### Option 3: Docker Image
 
