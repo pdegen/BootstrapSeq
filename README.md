@@ -14,14 +14,14 @@ For all options, it is assumed that you have R and edgeR already installed on yo
 
 ### Option 1: Snakemake
 
-1. Install [Snakemake](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html)
-   - Better yet, use the provided [workflow/envs/environment.yaml](workflow/envs/environment.yaml)
+1. Clone the repository
+2. Create a conda environment using [workflow/envs/environment.yaml](workflow/envs/environment.yaml)
    - `conda env create -f workflow/envs/environment.yaml`
    - `conda activate bootstrapseq`
 
-2. Edit [config/config.yaml](config/config.yaml) as needed or create a new config and define the filepath in [workflow/Snakefile](workflow/Snakefile)
+3. Edit [config/config.yaml](config/config.yaml) as needed or create a new config and define the filepath in [workflow/Snakefile](workflow/Snakefile)
 
-3. From the project root, run: `snakemake --cores 4` (adjust number of cores as needed)
+4. From the project root, run: `snakemake --cores 4` (adjust number of cores as needed)
 
 The workflow will create a merged table with edgeR differential expression results from all trials, as well as a json file with summary statistics from calculated Spearman corelations.
 

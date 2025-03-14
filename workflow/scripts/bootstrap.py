@@ -142,7 +142,7 @@ def bootstrap_data(
 
         # maxiter attempts if DEA fails for small N (matrix not full rank error if too many covariates)
         for a in range(1, maxiter):
-            np.random.seed(trial + (a - 1) * 1000)  # for first iteration, use trial number as seed
+            np.random.seed(trial + (a - 1) * 100000)  # for first iteration, use trial number as seed
             # preserve matched samples
             if design == "paired":
                 ind = np.array(np.random.choice(range(0, n), n))

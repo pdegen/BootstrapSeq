@@ -48,7 +48,7 @@ def predict_metrics(observed_spearman: float) -> dict:
             x, y = x.loc[common], y.loc[common]
             params, _ = curve_fit(linear, x, y)
             intersect = linear(observed_spearman, params[0], params[1])
-            res_dict[pretty_met[metric]][n] = intersect
+            res_dict[pretty_met[metric]][n] = max(min(intersect, 1), 0)
             # print(f"{pretty_met[metric]} N{N}: {intersect:.2f}")
     return res_dict
 
