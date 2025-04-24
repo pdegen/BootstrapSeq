@@ -1,0 +1,1 @@
+/home/peter/Work/OmicsPhD/BootstrapSeq/.snakemake/conda/c6d0d71cf3efa0bc5c0dd8f4219ff5bd_

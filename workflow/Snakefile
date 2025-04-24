@@ -1,9 +1,10 @@
+singularity: "docker://pdegen/bootstrapseq:0.1.0"
+configfile: "config/config.yaml"
+
 import os
 import glob
 import logging
 from pathlib import Path
-
-configfile: "config/config.yaml"
 
 trials = config["trials"]
 savepath = config["savepath"]
@@ -45,9 +46,9 @@ def prepare():
         trials_to_run = trials - existing_trials
 
         if trials_to_run < 1:
-            print(f"{existing_trials} trials already exist; {trials} requested")
+            logging.info(f"{existing_trials} trials already exist; {trials} requested")
         else:
-            print(f"Found: {existing_trials} existring trials, appending {trials_to_run} new ones...")
+            logging.info(f"Found: {existing_trials} existring trials, appending {trials_to_run} new ones...")
 
         return existing_trials
     return 0

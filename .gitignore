@@ -181,3 +181,5 @@ resources/*trials*.csv
 .vscode/
 config/config_*
 resources/
+
+.condarc

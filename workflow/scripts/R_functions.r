@@ -95,7 +95,7 @@ run_edgeR <- function(x, outfile, design, overwrite = FALSE, filter_expr = FALSE
       mutate_if(is.character, as.factor)
 
     other_vars <- setdiff(names(covariate_df), c("Condition", "X", "Sample"))
-    print("Warning: hard-coded col names in design matrix")
+    #print("Warning: hard-coded col names in design matrix")
     formula <- as.formula(paste("~", paste(c(other_vars, "Condition"), collapse = " + ")))
     print(paste("Formula:", formula))
     design <- model.matrix(formula, data = covariate_df)

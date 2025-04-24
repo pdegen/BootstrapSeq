@@ -15,4 +15,4 @@ dependencies:
   - rpy2=3.5.11=py312r43hc7c0aa3_3
   - r-dplyr=1.1.4=r43h0d4f4ea_1
   - scipy=1.14.1=py312h7d485d2_0
-  - snakemake=8.28.0=hdfd78af_0
+  - snakemake=9.3.0=hdfd78af_0

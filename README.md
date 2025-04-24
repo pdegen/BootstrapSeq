@@ -2,7 +2,7 @@
 
 (Pre-release version)
 
-Bootstrap resample your low-powered RNA-Seq data set to estimate the expected reliability of downstream differential expression and enrichment results. Briefly, users provide a raw count matrix and a design matrix. Users must additionally have edgeR installed. The provided Snakemake workflow (or Juypter notebook) will run bootstrapped differential expression analyses and compute the Spearman rank correlations for logFC estimates obtained from the bootstrapped and original data sets.
+Bootstrap resample your low-powered RNA-Seq data set to estimate the expected reliability of downstream differential expression and enrichment results. Briefly, users provide a raw count matrix and a design matrix. The provided Snakemake workflow (or Juypter notebook) will run bootstrapped differential expression analyses and compute the Spearman rank correlations for logFC estimates obtained from the bootstrapped and original data sets.
 
 In Degen and Medo (2025), we show that data sets with a high (>0.9) Spearman correlation have overall higher precision, recall, and replicability. Conversely, data sets with a low (<0.8) correlation are prone to false positives and low replicability. The figure below shows our results for 18 different data sets.
 
@@ -10,29 +10,35 @@ In Degen and Medo (2025), we show that data sets with a high (>0.9) Spearman cor
 
 ## Instructions
 
-In a future version, it will be possible to do the bootstrapping with a user-provided Python or R script for custom log fold change estimation.
+In a future version, it will be possible to do the bootstrapping with a user-provided Python or R script for custom log fold change estimation. For now, edgeR is used for this. To run the workflow, we provide three options, all of which start by cloning the repository:
 
-### Option 1: Snakemake
+- `git clone https://github.com/pdegen/BootstrapSeq.git`
 
-1. Clone the repository
-    - `git clone https://github.com/pdegen/BootstrapSeq.git`
-2. Create a conda environment using [workflow/envs/environment.yaml](workflow/envs/environment.yaml)
+### Option 1: Jupyter Notebook
+
+A Jupyter notebook with further instructions can be found in [notebooks/bootstrapseq.ipynb](notebooks/bootstrapseq.ipynb). This option does not support parallelization for now. You can handle package installation yourself or use the conda environment from Option 2.
+
+### Option 2: Snakemake
+
+1. Create a conda environment using [workflow/envs/environment.yaml](workflow/envs/environment.yaml)
    - `conda env create -f workflow/envs/environment.yaml`
    - `conda activate bootstrapseq`
 
-3. Edit [config/config.yaml](config/config.yaml) as needed or create a new config and define the filepath in [workflow/Snakefile](workflow/Snakefile)
+2. Edit [config/config.yaml](config/config.yaml) as needed or create a new config and define the filepath in [workflow/Snakefile](workflow/Snakefile)
 
-4. From the project root, run: `snakemake --cores 4` (adjust number of cores as needed)
+3. From the project root, run: `snakemake --cores 4` (adjust number of cores as needed)
 
 The workflow will create a merged table with edgeR differential expression results from all trials, as well as a json file with summary statistics from calculated Spearman corelations.
 
-### Option 2: Jupyter Notebook
+### Option 3: Containerized Snakemake
 
-A Jupyter notebook with further instructions can be found in [notebooks/bootstrapseq.ipynb](notebooks/bootstrapseq.ipynb). This option does not support parallelization for now. You can handle package installation yourself or use the conda environment from Option 1.
+For maximum reproducibility, the Snakemake workflow can also be run with [Apptainer](https://apptainer.org/docs/admin/main/installation.html) (formerly Singularity), which has to be installed separately. Then:
 
-### Option 3: Docker Image
+1. Edit [config/config.yaml](config/config.yaml) as needed or create a new config and define the filepath in [workflow/Snakefile](workflow/Snakefile)
 
-Coming soon...
+2. From the project root, run: `snakemake --use-singularity --use-conda  --cores 4`
+
+This command pulls the BootstrapSeq Docker image from [DockerHub](https://hub.docker.com/repository/docker/pdegen/bootstrapseq/general) with the corresponding conda environment.
 
 ### Number of bootstrap trials
 
