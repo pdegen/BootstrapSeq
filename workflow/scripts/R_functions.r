@@ -94,6 +94,11 @@ run_edgeR <- function(x, outfile, design, overwrite = FALSE, filter_expr = FALSE
     covariate_df <- covariate_df %>%
       mutate_if(is.character, as.factor)
 
+    # Relevel 'Condition' so that its first level is used as the reference
+    first_condition <- as.character(covariate_df$Condition[1])
+    print(paste("Reference condition:", first_condition))
+    covariate_df$Condition <- relevel(covariate_df$Condition, ref=first_condition)
+
     other_vars <- setdiff(names(covariate_df), c("Condition", "X", "Sample"))
     #print("Warning: hard-coded col names in design matrix")
     formula <- as.formula(paste("~", paste(c(other_vars, "Condition"), collapse = " + ")))

@@ -1,7 +1,5 @@
 # BootstrapSeq
 
-(Pre-release version)
-
 Bootstrap resample your low-powered RNA-Seq data set to estimate the expected reliability of downstream differential expression and enrichment results. Briefly, users provide a raw count matrix and a design matrix. The provided Snakemake workflow (or Juypter notebook) will run bootstrapped differential expression analyses and compute the Spearman rank correlations for logFC estimates obtained from the bootstrapped and original data sets.
 
 In Degen and Medo (2025), we show that data sets with a high (>0.9) Spearman correlation have overall higher precision, recall, and replicability. Conversely, data sets with a low (<0.8) correlation are prone to false positives and low replicability. The figure below shows our results for 18 different data sets.
@@ -55,3 +53,5 @@ In a data set with $n$ biological replicates, the number of distinct bootstrap t
 - Recommend number of trials based on variability of Spearman metric
 
 - Option to exhaust all combinations instead of random sampling
+
+- Support unbalanced designs

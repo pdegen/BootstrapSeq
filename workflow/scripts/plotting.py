@@ -212,7 +212,10 @@ def compare_plot(
         a.set_box_aspect(1)
         a.set(xlabel=(f"{metric_suffix.split('_')[-1].capitalize()} {pretty_met[metric_prefix]}"))
         a.set(ylim=(-0.05, 1.05))
-        a.set(xlim=(0.71, 0.99))
+        if observed_spearman:
+            a.set(xlim=(min(observed_spearman - 0.05, 0.71), 0.99))
+        else:
+            a.set(xlim=(0.71, 0.99))
         if "Spear" in x1:
             pass
             a.xaxis.set_ticks(np.arange(0.75, 1, 0.05))
